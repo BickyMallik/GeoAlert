@@ -31,7 +31,7 @@ public class AlertService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    public void createAlert(AlertRequest request){
+    public Alert createAlert(AlertRequest request){
         Alert alert =Alert.builder()
                 .title(request.getTitle())
                 .type(request.getType())
@@ -60,5 +60,11 @@ public class AlertService {
                 notificationRepository.save(notification);
             }
         }
+
+        return savedAlert;
+    }
+
+    public List<Alert> getAllAlerts(){
+        return alertRepository.findAll();
     }
 }
