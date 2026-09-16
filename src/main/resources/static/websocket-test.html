@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GeoAlert WebSocket Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+</head>
+<body>
+<h2>GeoAlert WebSocket Test</h2>
+<div id="messages"></div>
+
+<script>
+    var socket = new SockJS('http://localhost:8080/ws');
+    var stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function(frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/alerts', function(message) {
+            var div = document.createElement('div');
+            div.innerHTML = '<b>Alert received:</b> ' + message.body;
+            document.getElementById('messages').appendChild(div);
+        });
+    });
+</script>
+</body>
+</html>
