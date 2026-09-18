@@ -23,7 +23,7 @@ A real-time disaster alert notification system built with Spring Boot and PostGI
 2. PostGIS finds all users within the radius
 3. AI generates disaster-specific safety instructions
 4. WebSocket broadcasts alert to affected users in real time
-5. Scheduler auto-creates alerts from live weather data every 60 seconds
+5. Scheduler monitors live weather data and auto-creates alerts only for genuine disaster-level conditions (violent thunderstorms, extreme rainfall, tornadoes) with duplicate prevention
 
 ## Author
 Bicky Mallik — B.Tech CSE, BBIT Kolkata
