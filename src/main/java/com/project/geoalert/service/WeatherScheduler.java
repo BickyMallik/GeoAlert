@@ -2,6 +2,7 @@ package com.project.geoalert.service;
 
 import com.project.geoalert.dto.AlertRequest;
 import com.project.geoalert.entity.Alert;
+import com.project.geoalert.repository.AlertRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,6 +14,9 @@ public class WeatherScheduler {
 
     @Autowired
     private AlertService alertService;
+
+    @Autowired
+    private AlertRepository alertRepository;
 
     @Value("${openweathermap.api.key}")
     private String apiKey;
@@ -71,6 +75,11 @@ public class WeatherScheduler {
 
             if (type == null) return; // normal weather, no alert needed
 
+            if (alertRepository.existsTodayByType(type)) {
+                System.out.println("Alert already exists today for type: " + type);
+                return;
+            }
+
             AlertRequest request = new AlertRequest();
             request.setTitle("Auto Alert: " + description);
             request.setType(type);
@@ -88,19 +97,18 @@ public class WeatherScheduler {
     }
 
     private String mapWeatherIdToType(int id) {
-        if (id >= 200 && id < 300) return "THUNDERSTORM";
-        if (id >= 300 && id < 400) return "DRIZZLE";
-        if (id >= 500 && id < 600) return "FLOOD";
-        if (id >= 600 && id < 700) return "SNOWSTORM";
-        if (id >= 700 && id < 800) return "FOG";
-        return null; // clear or cloudy — no alert
+        if (id >= 200 && id < 210) return "THUNDERSTORM"; // violent thunderstorm only
+        if (id == 502 || id == 503 || id == 504) return "FLOOD"; // heavy/very heavy/extreme rain only
+        if (id == 511) return "FLOOD"; // freezing rain
+        if (id >= 600 && id < 602) return "SNOWSTORM"; // heavy snow only
+        if (id == 781) return "CYCLONE"; // tornado
+        return null; // everything else — moderate rain, drizzle, fog, clouds — no alert
     }
 
     private String mapWeatherIdToSeverity(int id) {
-        if (id >= 200 && id < 210) return "HIGH";
-        if (id >= 500 && id < 502) return "MEDIUM";
-        if (id >= 502) return "HIGH";
-        if (id >= 600 && id < 602) return "MEDIUM";
+        if (id == 781) return "EXTREME";
+        if (id == 504 || id >= 200 && id < 210) return "HIGH";
+        if (id == 502 || id == 503) return "MEDIUM";
         return "LOW";
     }
 }

@@ -24,4 +24,7 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
             @Param("longitude") Double longitude,
             @Param("radiusMeters") Double radiusMeters
     );
+
+    @Query(value = "SELECT COUNT(*) > 0 FROM alerts WHERE type = :type AND DATE(created_at) = CURRENT_DATE", nativeQuery = true)
+    boolean existsTodayByType(@Param("type") String type);
 }
