@@ -1,0 +1,10 @@
+spring.application.name=geoalert
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/geoalert_db
+spring.datasource.username=your_pg_username
+spring.datasource.password=your_pg_password
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+server.port=8080
